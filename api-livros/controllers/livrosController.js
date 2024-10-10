@@ -12,11 +12,12 @@ export const getLivros = (_, res) => {
 
 export const addLivro = (req, res) => {
   const sql =
-    "INSERT INTO livros(`livro`, `data`) VALUES(?)";
+    "INSERT INTO livros(`livro`, `data`, `autor`) VALUES(?)";
 
   const values = [
     req.body.livro,
     req.body.data,
+    req.body.autor,
   ];
 
   db.query(sql, [values], (err) => {
@@ -28,11 +29,12 @@ export const addLivro = (req, res) => {
 
 export const updateLivro = (req, res) => {
   const sql =
-    "UPDATE livros SET `livro` = ?, `data` = ? WHERE `id` = ?";
+    "UPDATE livros SET `livro` = ?, `data` = ?, `autor` = ? WHERE `id` = ?";
 
   const values = [
     req.body.livro,
     req.body.data,
+    req.body.autor,
   ];
 
   db.query(q, [...values, req.params.id], (err) => {

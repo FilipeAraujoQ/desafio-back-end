@@ -41,7 +41,7 @@ export const Td = styled.td`
   }
 `;
 
-const Grid = ({ users, setUsers, setOnEdit }) => {
+const Grid = ({ livros, setLivros, setOnEdit }) => {
   const handleEdit = (item) => {
     setOnEdit(item);
   };
@@ -50,9 +50,9 @@ const Grid = ({ users, setUsers, setOnEdit }) => {
     await axios
       .delete("http://localhost:8800/" + id)
       .then(({ data }) => {
-        const newArray = users.filter((user) => user.id !== id);
+        const newArray = livros.filter((livro) => livro.id !== id);
 
-        setUsers(newArray);
+        setLivros(newArray);
         toast.success(data);
       })
       .catch(({ data }) => toast.error(data));
@@ -72,12 +72,12 @@ const Grid = ({ users, setUsers, setOnEdit }) => {
         </Tr>
       </Thead>
       <Tbody>
-        {users.map((item, i) => (
+        {livros.map((item, i) => (
           <Tr key={i}>
-            <Td width="30%">{item.nome}</Td>
-            <Td width="30%">{item.email}</Td>
+            <Td width="30%">{item.livro}</Td>
+            <Td width="30%">{item.autor}</Td>
             <Td width="20%" onlyWeb>
-              {item.fone}
+              {item.data}
             </Td>
             <Td alignCenter width="5%">
               <FaEdit onClick={() => handleEdit(item)} />

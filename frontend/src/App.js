@@ -20,28 +20,28 @@ const Container = styled.div`
 const Title = styled.h2``;
 
 function App() {
-  const [users, setUsers] = useState([]);
+  const [livros, setLivros] = useState([]);
   const [onEdit, setOnEdit] = useState(null);
 
-  const getUsers = async () => {
+  const getLivros = async () => {
     try {
       const res = await axios.get("http://localhost:8800");
-      setUsers(res.data.sort((a, b) => (a.nome > b.nome ? 1 : -1)));
+      setLivros(res.data.sort((a, b) => (a.livro > b.livro ? 1 : -1)));
     } catch (error) {
       toast.error(error);
     }
   };
 
   useEffect(() => {
-    getUsers();
-  }, [setUsers]);
+    getLivros();
+  }, [setLivros]);
 
   return (
     <>
       <Container>
         <Title>USUÁRIOS</Title>
-        <Form onEdit={onEdit} setOnEdit={setOnEdit} getUsers={getUsers} />
-        <Grid setOnEdit={setOnEdit} users={users} setUsers={setUsers} />
+        <Form onEdit={onEdit} setOnEdit={setOnEdit} getLivros={getLivros} />
+        <Grid setOnEdit={setOnEdit} livros={livros} setLivros={setLivros} />
       </Container>
       <ToastContainer autoClose={3000} position={toast.POSITION.BOTTOM_LEFT} />
       <GlobalStyle />
