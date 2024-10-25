@@ -33,10 +33,10 @@ export const updateLivro = (req, res) => {
     "UPDATE livros SET `livro` = ?, `data` = ?, `autor` = ?, `status` = ? WHERE `id` = ?";
 
   const values = [
-    req.body.livro,
-    req.body.data,
-    req.body.autor,
-    req.body.status,
+    req.body.livro || "",
+    req.body.data || null,
+    req.body.autor || "",
+    req.body.status || 0,
   ];
 
   db.query(sql, [...values, req.params.id], (err) => {

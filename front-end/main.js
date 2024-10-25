@@ -19,12 +19,12 @@ const loadLivros = async () => {
             tr.innerHTML = `
                 <td class="py-2 px-4 border-b text-center">${livro.livro}</td>
                 <td class="py-2 px-4 border-b text-center">${livro.autor}</td>
-                <td class="py-2 px-4 border-b text-center">${formatDate(livro.data)}</td> <!-- Formatação da data -->
+                <td class="py-2 px-4 border-b text-center">${formatDate(livro.data)}</td>
                 <td class="py-2 px-4 border-b text-center">
                     <input type="checkbox" onchange="updateStatus(${livro.id}, this.checked)" ${livro.status ? 'checked' : ''}>
                 </td>
                 <td class="py-2 px-4 border-b text-center">
-                    <button onclick="editLivro(${livro.id})" class="bg-yellow-500 text-white rounded p-1">Editar</button>
+                    <button onclick="editLivro(${livro.id}, '${livro.livro}', '${livro.autor}', '${livro.data}')" class="bg-yellow-500 text-white rounded p-1">Editar</button>
                 </td>
             `;
             livrosList.appendChild(tr);
@@ -34,7 +34,14 @@ const loadLivros = async () => {
     }
 };
 
-
+const updateStatus = async (id, status) => {
+    try {
+        await axios.put(`${url}${id}`, { status });
+        loadLivros();
+    } catch (error) {
+        console.error('Erro ao atualizar status:', error);
+    }
+};
 
 // Função para adicionar livro
 document.getElementById('livroForm').addEventListener('submit', async (e) => {
@@ -54,20 +61,42 @@ document.getElementById('livroForm').addEventListener('submit', async (e) => {
     }
 });
 
-// Função para editar livro
-const editLivro = async (id) => {
-    const livro = prompt('Nome do Livro:');
-    const autor = prompt('Autor:');
-    const data = prompt('Data de Lançamento:');
-    const status = confirm('Livro lido?');
 
-    try {
-        await axios.put(`${url}/${id}`, { livro, autor, data, status });
-        loadLivros(); // Recarrega a lista de livros
-    } catch (error) {
-        console.error('Erro ao editar livro:', error);
+const editLivro = (id, livro, autor, data) => {
+    const livrosList = document.getElementById('livrosList');
+    const rows = livrosList.getElementsByTagName('tr');
+
+    for (let row of rows) {
+        const cells = row.getElementsByTagName('td');
+        if (cells[0].innerText === livro) { // Encontra a linha correspondente
+            console.log('Editando livro:', livro);
+
+            // Substituir os valores da linha por inputs
+            cells[0].innerHTML = `<input type="text" value="${livro}" class="border rounded p-1">`;
+            cells[1].innerHTML = `<input type="text" value="${autor}" class="border rounded p-1">`;
+            cells[2].innerHTML = `<input type="date" value="${data.split('T')[0]}" class="border rounded p-1">`;
+            cells[3].innerHTML = `<input type="checkbox" onchange="updateStatus(${id}, this.checked)" ${livro.status ? 'checked' : ''}>`;
+            cells[4].innerHTML = `<button onclick="saveLivro(${id}, this.parentElement.parentElement)" class="bg-green-500 text-white rounded p-1">Salvar</button>`;
+            break;
+        }
     }
 };
 
-// Carrega os livros ao iniciar
+const saveLivro = async (id, row) => {
+    const inputs = row.getElementsByTagName('input');
+    const livro = inputs[0].value;
+    const autor = inputs[1].value;
+    const data = inputs[2].value;
+    const status = inputs[3].checked ? 1 : 0;
+
+    try {
+        await axios.put(`${url}${id}`, { livro, autor, data, status });
+        loadLivros(); // Recarrega a lista de livros
+    } catch (error) {
+        console.error('Erro ao salvar livro:', error);
+    }
+};
+
+
+
 loadLivros();

@@ -5,5 +5,5 @@ export const db = mysql.createConnection({
     host: "localhost",
     user: "root",
     password: "",
-    database: "api-livro"
+    database: "api-livros"
 })
