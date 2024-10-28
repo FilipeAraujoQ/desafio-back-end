@@ -25,6 +25,7 @@ const loadLivros = async () => {
                 </td>
                 <td class="py-2 px-4 border-b text-center">
                     <button onclick="editLivro(${livro.id}, '${livro.livro}', '${livro.autor}', '${livro.data}')" class="bg-yellow-500 text-white rounded p-1">Editar</button>
+                    <button onclick="deleteLivro(${livro.id})" class="bg-red-500 text-white rounded p-1 ml-2">Excluir</button>
                 </td>
             `;
             livrosList.appendChild(tr);
@@ -33,6 +34,7 @@ const loadLivros = async () => {
         console.error('Erro ao carregar livros:', error);
     }
 };
+
 
 const updateStatus = async (id, status) => {
     try {
@@ -54,8 +56,8 @@ document.getElementById('livroForm').addEventListener('submit', async (e) => {
 
     try {
         await axios.post(url, { livro, autor, data, status });
-        loadLivros(); // Recarrega a lista de livros
-        e.target.reset(); // Limpa o formulário
+        loadLivros(); 
+        e.target.reset(); 
     } catch (error) {
         console.error('Erro ao adicionar livro:', error);
     }
@@ -68,10 +70,9 @@ const editLivro = (id, livro, autor, data) => {
 
     for (let row of rows) {
         const cells = row.getElementsByTagName('td');
-        if (cells[0].innerText === livro) { // Encontra a linha correspondente
+        if (cells[0].innerText === livro) { 
             console.log('Editando livro:', livro);
 
-            // Substituir os valores da linha por inputs
             cells[0].innerHTML = `<input type="text" value="${livro}" class="border rounded p-1">`;
             cells[1].innerHTML = `<input type="text" value="${autor}" class="border rounded p-1">`;
             cells[2].innerHTML = `<input type="date" value="${data.split('T')[0]}" class="border rounded p-1">`;
@@ -91,12 +92,22 @@ const saveLivro = async (id, row) => {
 
     try {
         await axios.put(`${url}${id}`, { livro, autor, data, status });
-        loadLivros(); // Recarrega a lista de livros
+        loadLivros(); 
     } catch (error) {
         console.error('Erro ao salvar livro:', error);
     }
 };
 
+const deleteLivro = async (id) => {
+    if (confirm('Tem certeza de que deseja excluir este livro?')) {
+        try {
+            await axios.delete(`${url}${id}`); 
+            loadLivros(); 
+        } catch (error) {
+            console.error('Erro ao excluir livro:', error);
+        }
+    }
+};
 
 
 loadLivros();
