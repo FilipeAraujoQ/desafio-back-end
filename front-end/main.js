@@ -46,7 +46,6 @@ const updateStatus = async (id, status) => {
 };
 
 
-// Função para adicionar livro
 document.getElementById('livroForm').addEventListener('submit', async (e) => {
     e.preventDefault();
 
@@ -83,6 +82,7 @@ const editLivro = (id, livro, autor, data) => {
     }
 };
 
+
 const saveLivro = async (id, row) => {
     const inputs = row.getElementsByTagName('input');
     const livro = inputs[0].value;
@@ -98,6 +98,7 @@ const saveLivro = async (id, row) => {
     }
 };
 
+
 const deleteLivro = async (id) => {
     if (confirm('Tem certeza de que deseja excluir este livro?')) {
         try {
@@ -109,5 +110,58 @@ const deleteLivro = async (id) => {
     }
 };
 
+
+const filtrarLivros = async () => {
+    const nomeFiltro = document.getElementById('filtroNome').value.toLowerCase();
+    const statusFiltro = document.getElementById('filtroStatus').value;
+
+    try {
+        const response = await axios.get(url);
+        let livros = response.data;
+
+        if (nomeFiltro) {
+            livros = livros.filter(livro => livro.livro.toLowerCase().includes(nomeFiltro));
+        }
+
+        if (statusFiltro !== "todos") {
+            const status = statusFiltro === "lidos" ? 1 : 0;
+            livros = livros.filter(livro => livro.status === status);
+        }
+
+        renderLivros(livros);
+    } catch (error) {
+        console.error('Erro ao filtrar livros:', error);
+    }
+};
+
+
+const limparFiltros = async () => {
+    document.getElementById('filtroNome').value = "";
+    document.getElementById('filtroStatus').value = "todos";
+    loadLivros();
+};
+
+
+const renderLivros = (livros) => {
+    const livrosList = document.getElementById('livrosList');
+    livrosList.innerHTML = ''; // Limpa a lista
+
+    livros.forEach(livro => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td class="py-2 px-4 border-b text-center">${livro.livro}</td>
+            <td class="py-2 px-4 border-b text-center">${livro.autor}</td>
+            <td class="py-2 px-4 border-b text-center">${formatDate(livro.data)}</td>
+            <td class="py-2 px-4 border-b text-center">
+                <input type="checkbox" onchange="updateStatus(${livro.id}, this.checked)" ${livro.status ? 'checked' : ''}>
+            </td>
+            <td class="py-2 px-4 border-b text-center">
+                <button onclick="editLivro(${livro.id}, '${livro.livro}', '${livro.autor}', '${livro.data}')" class="bg-yellow-500 text-white rounded p-1">Editar</button>
+                <button onclick="deleteLivro(${livro.id})" class="bg-red-500 text-white rounded p-1 ml-2">Excluir</button>
+            </td>
+        `;
+        livrosList.appendChild(tr);
+    });
+};
 
 loadLivros();

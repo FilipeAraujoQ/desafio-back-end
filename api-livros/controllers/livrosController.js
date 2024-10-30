@@ -1,14 +1,30 @@
 import { db } from "../db.js";
 
-export const getLivros = (_, res) => {
-  const sql = "SELECT * FROM livros";
+export const getLivros = (req, res) => {
+  let sql = "SELECT * FROM livros";
+  const filters = [];
+  
+  // Verifica se existe um filtro por nome e adiciona ao SQL
+  if (req.query.nome) {
+    filters.push(`livro LIKE '%${req.query.nome}%'`);
+  }
+
+  // Verifica se existe um filtro por status e adiciona ao SQL
+  if (req.query.status) {
+    filters.push(`status = ${req.query.status}`);
+  }
+
+  // Se houver filtros, adiciona ao SQL
+  if (filters.length) {
+    sql += " WHERE " + filters.join(" AND ");
+  }
 
   db.query(sql, (err, data) => {
     if (err) return res.json(err);
-
     return res.status(200).json(data);
   });
 };
+
 
 export const addLivro = (req, res) => {
   const sql =
@@ -64,3 +80,4 @@ export const deleteLivro = (req, res) => {
     return res.status(200).json(" deletado com sucesso.");
   });
 };
+
