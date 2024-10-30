@@ -38,12 +38,13 @@ const loadLivros = async () => {
 
 const updateStatus = async (id, status) => {
     try {
-        await axios.put(`${url}${id}`, { status });
+        await axios.put(`${url}${id}/status`, { status });
         loadLivros();
     } catch (error) {
         console.error('Erro ao atualizar status:', error);
     }
 };
+
 
 // Função para adicionar livro
 document.getElementById('livroForm').addEventListener('submit', async (e) => {
@@ -71,7 +72,6 @@ const editLivro = (id, livro, autor, data) => {
     for (let row of rows) {
         const cells = row.getElementsByTagName('td');
         if (cells[0].innerText === livro) { 
-            console.log('Editando livro:', livro);
 
             cells[0].innerHTML = `<input type="text" value="${livro}" class="border rounded p-1">`;
             cells[1].innerHTML = `<input type="text" value="${autor}" class="border rounded p-1">`;

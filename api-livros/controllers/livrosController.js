@@ -46,6 +46,15 @@ export const updateLivro = (req, res) => {
   });
 };
 
+export const updateStatus = (req, res) => {
+  const sql = "UPDATE livros SET `status` = ? WHERE `id` = ?";
+
+  db.query(sql, [req.body.status, req.params.id], (err) => {
+    if (err) return res.json(err);
+    return res.status(200).json("Status atualizado com sucesso.");
+  });
+};
+
 export const deleteLivro = (req, res) => {
   const q = "DELETE FROM livros WHERE `id` = ?";
 
