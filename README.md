@@ -16,16 +16,15 @@ Para executar este projeto, é necessário criar um banco de dados MySQL com uma
 
 ```bash
 # Clone este repositório
-$ git clone <https://github.com/tgmarinho/nlw1>
+$ git clone https://github.com/FilipeAraujoQ/desafio-back-end.git
 
-# Acesse a pasta do projeto no terminal/cmd
-$ cd nlw1
+# Acesse a pasta api-livros
+$ cd api-livros
 
-# Vá para a pasta server
-$ cd server
-
-# Instale as dependências
+# Baixe as dependencias
 $ npm install
 
-# Execute a aplicação em modo de desenvolvimento
-$ npm run dev:server
+# Execute a API
+$ npm run start
+
+#Por fim so abrir o index.html na pasta 'front' da maneira que quiser
